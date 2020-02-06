@@ -6,7 +6,7 @@ Your endpoint is:
 {{- if .Values.ingress.tls }}
 https://{{ index .Values.ingress.tls 0 }}?secret=SECRET&contact_group=CONTACT_GROUP
 {{- else }}
-http://{{ index .Values.ingress.hosts 0 }}
+http://{{ index .Values.ingress.hosts 0 }}?secret=SECRET&contact_group=CONTACT_GROUP
 {{- end }}
 
 
