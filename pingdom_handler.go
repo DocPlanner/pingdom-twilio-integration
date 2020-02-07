@@ -57,8 +57,9 @@ func pingdomHandler(c *gin.Context) {
 	}
 
 	var errors []error
+	bodyMessage := generateBodyMessage(pingdomPayload)
 	for _, contact := range contactGroupsMap[contactGroupName] {
-		_, err := twilioClient.SimpleSendSMS(fromNumber, contact, generateBodyMessage(pingdomPayload))
+		_, err := twilioClient.SimpleSendSMS(fromNumber, contact, bodyMessage)
 		if err != nil {
 			errors = append(errors, err)
 		}
