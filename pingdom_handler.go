@@ -9,14 +9,27 @@ import (
 )
 
 type pingdomPayload struct {
-	CheckId             int      `json:"check_id"`
-	CheckName           string   `json:"check_name"`
-	CheckType           string   `json:"check_type"`
+	CheckId     int    `json:"check_id"`
+	CheckName   string `json:"check_name"`
+	CheckType   string `json:"check_type"`
+	CheckParams struct {
+		Hostname string `json:"hostname"`
+	} `json:"check_params"`
 	Tags                []string `json:"tags"`
 	PreviousState       string   `json:"previous_state"`
 	CurrentState        string   `json:"current_state"`
 	StateChangedUtcTime string   `json:"state_changed_utc_time"`
 	Description         string   `json:"description"`
+}
+
+func generateBodyMessage(payload pingdomPayload) string {
+	boddyMessage := "PingdomAlert " + payload.CurrentState + ": " + payload.CheckParams.Hostname + " (" + payload.CheckName + ") Response: " + payload.Description
+
+	if len(boddyMessage) > 160 {
+		return boddyMessage[0:157] + "..."
+	}
+
+	return boddyMessage
 }
 
 func pingdomHandler(c *gin.Context) {
@@ -44,8 +57,9 @@ func pingdomHandler(c *gin.Context) {
 	}
 
 	var errors []error
+	bodyMessage := generateBodyMessage(pingdomPayload)
 	for _, contact := range contactGroupsMap[contactGroupName] {
-		_, err := twilioClient.SimpleSendSMS(fromNumber, contact, pingdomPayload.Description)
+		_, err := twilioClient.SimpleSendSMS(fromNumber, contact, bodyMessage)
 		if err != nil {
 			errors = append(errors, err)
 		}
