@@ -1,6 +1,7 @@
 # pingdom-twilio-integration
 
-[![Docker Hub](https://img.shields.io/docker/cloud/build/docplanner/pingdom-twilio-integration?style=for-the-badge)](https://hub.docker.com/r/docplanner/pingdom-twilio-integration)
+[![Publish Docker](https://github.com/DocPlanner/pingdom-twilio-integration/workflows/Publish%20Docker/badge.svg)](https://hub.docker.com/r/docplanner/pingdom-twilio-integration)
+
 ## How it works?
 pingdom-twilio-integration sends messages to contact groups defined in configuration.
 
