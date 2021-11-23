@@ -1,12 +1,16 @@
 package main
 
 import (
-	"DocPlanner/pingdom-twilio-integration/contacts"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/subosito/twilio"
 	"net/http"
+
+	"DocPlanner/pingdom-twilio-integration/contacts"
+	"github.com/gin-gonic/gin"
+	"github.com/nyaruka/phonenumbers"
+	"github.com/subosito/twilio"
 )
+
+const defaultRegion = "PL"
 
 type pingdomPayload struct {
 	CheckId     int    `json:"check_id"`
@@ -59,7 +63,17 @@ func pingdomHandler(c *gin.Context) {
 	var errors []error
 	bodyMessage := generateBodyMessage(pingdomPayload)
 	for _, contact := range contactGroupsMap[contactGroupName] {
-		_, err := twilioClient.SimpleSendSMS(fromNumber, contact, bodyMessage)
+
+		number, err := phonenumbers.Parse(contact, defaultRegion)
+		if err != nil {
+			fmt.Println(err)
+
+			continue
+		}
+
+		numberStr := fmt.Sprintf("+%d%d", number.GetCountryCode(), number.GetNationalNumber())
+
+		_, err = twilioClient.SimpleSendSMS(fromNumber, numberStr, bodyMessage)
 		if err != nil {
 			errors = append(errors, err)
 		}
