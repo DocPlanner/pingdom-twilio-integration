@@ -1,4 +1,4 @@
-FROM golang:1.13-alpine AS builder
+FROM golang:1.17-alpine AS builder
 RUN apk update && apk add alpine-sdk git && rm -rf /var/cache/apk/*
 WORKDIR /go/src/app
 
@@ -7,7 +7,7 @@ RUN go mod download
 RUN go test
 RUN go build -o ./pingdom-twilio-integration .
 
-FROM alpine:3.11
+FROM alpine:3.14
 EXPOSE 80
 ENTRYPOINT ["./pingdom-twilio-integration"]
 ENV GIN_MODE=release
